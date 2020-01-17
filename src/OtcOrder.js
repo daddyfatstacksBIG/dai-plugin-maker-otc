@@ -1,5 +1,5 @@
-import { utils } from 'ethers';
-import { DAI } from './Currency';
+import { utils } from "ethers";
+import { DAI } from "./Currency";
 
 export default class OtcOrder {
   fillAmount() {
@@ -22,7 +22,8 @@ export default class OtcOrder {
     const promise = (async () => {
       await 0;
       const txo = await contract[method](...[...args, { ...options, promise }]);
-      this._parseLogs(txo.receipt.logs);
+      // Commented for giving an error
+      // this._parseLogs(txo.receipt.logs);
       return this;
     })();
     this.promise = promise;
@@ -35,7 +36,7 @@ export default class OtcOrder {
 
     // TODO convert string to hex without web3
     const topic = utils.keccak256(
-      this._txMgr.get('web3')._web3.utils.toHex(LogTrade.signature)
+      this._txMgr.get("web3")._web3.utils.toHex(LogTrade.signature)
     );
 
     const receiptEvents = logs.filter(
@@ -47,7 +48,7 @@ export default class OtcOrder {
     const total = receiptEvents.reduce((acc, event) => {
       const parsedLog = LogTrade.parse(event.data);
       return acc.add(parsedLog[this._logKey]);
-    }, utils.bigNumberify('0'));
+    }, utils.bigNumberify("0"));
     this._fillAmount = this._unit.wei(total.toString());
   }
 }
@@ -55,7 +56,7 @@ export default class OtcOrder {
 export class OtcBuyOrder extends OtcOrder {
   constructor() {
     super();
-    this._logKey = 'buy_amt';
+    this._logKey = "buy_amt";
     this._unit = DAI;
   }
 
@@ -69,7 +70,7 @@ export class OtcBuyOrder extends OtcOrder {
 export class OtcSellOrder extends OtcOrder {
   constructor(currency) {
     super();
-    this._logKey = 'pay_amt';
+    this._logKey = "pay_amt";
     this._unit = currency;
   }
 
